@@ -2,9 +2,11 @@ import React, {useState, useEffect} from 'react'
 
 const cardBackUrl = 'https://gamesbyjohnny.files.wordpress.com/2009/11/magic-the-gathering-card-back.jpg'
 
+const range = end => end >= 1 ? Array.from(Array(parseInt(end)).keys()) : []
+
 const Card = ({width}) => {
     const [imageUrl, setImageUrl] = useState('')
-    const [showTextarea, setShowTextarea] = useState(true)
+    const [showTextarea, setShowTextarea] = useState(false)
     const textareaRef = React.createRef()
 
     useEffect(() => {
@@ -49,17 +51,69 @@ const Card = ({width}) => {
         backgroundSize: 'contain'
     }
 
-    return (<div>
+    return (
         <div style={divStyle} onClick={() => setShowTextarea(true)}>
             <textarea onBlur={onBlur} hidden={!showTextarea} ref={textareaRef}></textarea>
         </div>
-    </div>)
+    )
+}
+
+const Category = ({cellWidth}) => {
+    const style = {
+        width: 'max-content',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        borderRight: 'solid',
+        padding: 20,
+    }
+    return (
+        <div style={style}>
+            <input defaultValue='Title' />
+            <table>
+                <tbody>
+                    <tr>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                    </tr>
+                    <tr>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                    </tr>
+                    <tr>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                    </tr>
+                    <tr>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                    </tr>
+                    <tr>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                        <td><Card width={cellWidth}/></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    )
 }
 
 export default function Home() {
+    const [categories, setCategories] = useState([0])
     return (
         <div>
-            <Card width={200}/>
+            <label>number of categories: </label>
+            <input value={categories.length}
+                onChange={event => {setCategories(range(parseInt(event.target.value)))}}/>
+            <div style={{display: 'flex'}}>
+                {categories.map(key => <Category cellWidth={120} key={key} />)}
+            </div>
         </div>
     )
 }
