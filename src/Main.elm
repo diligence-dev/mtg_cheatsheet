@@ -96,7 +96,7 @@ type Msg
     | Drag Element Int Int
     | DragEnd
     | DragOver
-    | Drop Int Int
+    | Drop (Maybe String) Int Int
     | Input String
     | InputLostFocus
     | Submit
@@ -231,7 +231,7 @@ update msg model =
                             let
                                 newQuery =
                                     if element.fontSize > 0 then
-                                        element.imageSource
+                                        String.fromInt element.fontSize ++ " " ++ element.imageSource
 
                                     else
                                         ""
@@ -271,7 +271,7 @@ update msg model =
         DragOver ->
             ( model, Cmd.none )
 
-        Drop left top ->
+        Drop link left top ->
             case model.beingDragged of
                 Nothing ->
                     ( model, Cmd.none )
@@ -347,8 +347,10 @@ view model =
                     ]
 
         importExportButtons =
-            [ button [ Events.onClick Export ] [ text "export" ]
-            , button [ Events.onClick Import ] [ text "import" ]
+            [ div [ style "position" "fixed" ]
+                [ button [ Events.onClick Export ] [ text "export" ]
+                , button [ Events.onClick Import ] [ text "import" ]
+                ]
             ]
 
         messageToast =
@@ -361,7 +363,7 @@ view model =
         , style "background-color" "green"
         , onDoubleClick <| DoubleClick Nothing
         , onDragOver DragOver
-        , onDrop Drop
+        , onDrop <| Drop Nothing
         ]
         (messageToast ++ importExportButtons ++ maybeInput ++ List.map viewElement model.elements)
 

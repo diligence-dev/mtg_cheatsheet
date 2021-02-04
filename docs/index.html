@@ -798,11 +798,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.ac.P === region.ah.P)
+	if (region.ac.Q === region.ah.Q)
 	{
-		return 'on line ' + region.ac.P;
+		return 'on line ' + region.ac.Q;
 	}
-	return 'on lines ' + region.ac.P + ' through ' + region.ah.P;
+	return 'on lines ' + region.ac.Q + ' through ' + region.ah.Q;
 }
 
 
@@ -5553,7 +5553,7 @@ var $elm$core$Task$perform = F2(
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$Main$Element = F5(
 	function (left, top, imageSource, zIndex, fontSize) {
-		return {X: fontSize, Y: imageSource, l: left, o: top, W: zIndex};
+		return {O: fontSize, Y: imageSource, l: left, o: top, X: zIndex};
 	});
 var $author$project$Main$UpdatedSimpleMessageToast = function (a) {
 	return {$: 14, a: a};
@@ -5563,7 +5563,7 @@ var $mercurymedia$elm_message_toast$MessageToast$MessageToast = F2(
 		return {$: 0, a: a, b: b};
 	});
 var $mercurymedia$elm_message_toast$MessageToast$init = function (updateMsg) {
-	var config = {J: _List_Nil, K: _List_Nil, L: _List_Nil, M: _List_Nil, N: 8000, S: 4, V: updateMsg};
+	var config = {J: _List_Nil, K: _List_Nil, L: _List_Nil, M: _List_Nil, N: 8000, T: 4, W: updateMsg};
 	return A2($mercurymedia$elm_message_toast$MessageToast$MessageToast, config, _List_Nil);
 };
 var $elm$core$Basics$negate = function (n) {
@@ -6157,7 +6157,7 @@ var $mercurymedia$elm_message_toast$MessageToast$subscriptions = function (messa
 			$elm$time$Time$every,
 			config.N,
 			function (_v1) {
-				return config.V(
+				return config.W(
 					$mercurymedia$elm_message_toast$MessageToast$popOldestToast(messageToast));
 			});
 	} else {
@@ -6252,9 +6252,9 @@ var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Main$encodeElement = function (_v0) {
 	var left = _v0.l;
 	var top = _v0.o;
-	var zIndex = _v0.W;
+	var zIndex = _v0.X;
 	var imageSource = _v0.Y;
-	var fontSize = _v0.X;
+	var fontSize = _v0.O;
 	return $elm$json$Json$Encode$object(
 		_List_fromArray(
 			[
@@ -6983,7 +6983,7 @@ var $author$project$Main$nextZIndex = function (elements) {
 			A2(
 				$elm$core$List$map,
 				function ($) {
-					return $.W;
+					return $.X;
 				},
 				elements))) + 1;
 };
@@ -7036,7 +7036,7 @@ var $mercurymedia$elm_message_toast$MessageToast$appendToList = F2(
 			config,
 			A2(
 				$elm$core$List$take,
-				config.S,
+				config.T,
 				A2(
 					$elm$core$List$append,
 					_List_fromArray(
@@ -7138,7 +7138,7 @@ var $author$project$Main$update = F2(
 								function (input) {
 									return _Utils_update(
 										input,
-										{O: false});
+										{P: false});
 								},
 								model.f),
 							q: newMessageToast
@@ -7183,7 +7183,7 @@ var $author$project$Main$update = F2(
 									f: $elm$core$Maybe$Just(
 										_Utils_update(
 											input,
-											{O: true}))
+											{P: true}))
 								});
 							var command = $elm$http$Http$get(
 								{
@@ -7256,11 +7256,11 @@ var $author$project$Main$update = F2(
 							model,
 							{
 								f: $elm$core$Maybe$Just(
-									{O: false, l: left, y: '', o: top})
+									{P: false, l: left, y: '', o: top})
 							});
 					} else {
 						var element = maybeElement.a;
-						var newQuery = (element.X > 0) ? element.Y : '';
+						var newQuery = (element.O > 0) ? ($elm$core$String$fromInt(element.O) + (' ' + element.Y)) : '';
 						return _Utils_update(
 							model,
 							{
@@ -7269,7 +7269,7 @@ var $author$project$Main$update = F2(
 									$elm$core$Basics$neq(element),
 									model.c),
 								f: $elm$core$Maybe$Just(
-									{O: false, l: left, y: newQuery, o: top})
+									{P: false, l: left, y: newQuery, o: top})
 							});
 					}
 				}();
@@ -7327,8 +7327,9 @@ var $author$project$Main$update = F2(
 			case 3:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			default:
-				var left = msg.a;
-				var top = msg.b;
+				var link = msg.a;
+				var left = msg.b;
+				var top = msg.c;
 				var _v11 = model.u;
 				if (_v11.$ === 1) {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -7342,7 +7343,7 @@ var $author$project$Main$update = F2(
 						{
 							l: element.l + (left - startLeft),
 							o: element.o + (top - startTop),
-							W: $author$project$Main$nextZIndex(model.c)
+							X: $author$project$Main$nextZIndex(model.c)
 						});
 					return _Utils_Tuple2(
 						_Utils_update(
@@ -7360,9 +7361,9 @@ var $author$project$Main$DoubleClick = F3(
 		return {$: 0, a: a, b: b, c: c};
 	});
 var $author$project$Main$DragOver = {$: 3};
-var $author$project$Main$Drop = F2(
-	function (a, b) {
-		return {$: 4, a: a, b: b};
+var $author$project$Main$Drop = F3(
+	function (a, b, c) {
+		return {$: 4, a: a, b: b, c: c};
 	});
 var $author$project$Main$Export = {$: 9};
 var $author$project$Main$Import = {$: 10};
@@ -7863,7 +7864,7 @@ var $mercurymedia$elm_message_toast$MessageToast$view = function (_v0) {
 	var config = _v0.a;
 	var toasts = _v0.b;
 	var dismissEvent = function (toastMessage) {
-		return config.V(
+		return config.W(
 			A2(
 				$mercurymedia$elm_message_toast$MessageToast$MessageToast,
 				config,
@@ -7941,8 +7942,8 @@ var $author$project$Main$viewElement = function (element) {
 	var left = _v0.l;
 	var top = _v0.o;
 	var imageSource = _v0.Y;
-	var zIndex = _v0.W;
-	var fontSize = _v0.X;
+	var zIndex = _v0.X;
+	var fontSize = _v0.O;
 	var commonAttributes = _List_fromArray(
 		[
 			A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
@@ -8013,7 +8014,7 @@ var $author$project$Main$view = function (model) {
 			var left = _v0.a.l;
 			var top = _v0.a.o;
 			var query = _v0.a.y;
-			var isLoading = _v0.a.O;
+			var isLoading = _v0.a.P;
 			return _List_fromArray(
 				[
 					A2(
@@ -8051,24 +8052,33 @@ var $author$project$Main$view = function (model) {
 	var importExportButtons = _List_fromArray(
 		[
 			A2(
-			$elm$html$Html$button,
+			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Events$onClick($author$project$Main$Export)
+					A2($elm$html$Html$Attributes$style, 'position', 'fixed')
 				]),
 			_List_fromArray(
 				[
-					$elm$html$Html$text('export')
-				])),
-			A2(
-			$elm$html$Html$button,
-			_List_fromArray(
-				[
-					$elm$html$Html$Events$onClick($author$project$Main$Import)
-				]),
-			_List_fromArray(
-				[
-					$elm$html$Html$text('import')
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick($author$project$Main$Export)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('export')
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick($author$project$Main$Import)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('import')
+						]))
 				]))
 		]);
 	return A2(
@@ -8082,7 +8092,8 @@ var $author$project$Main$view = function (model) {
 				$author$project$Main$onDoubleClick(
 				$author$project$Main$DoubleClick($elm$core$Maybe$Nothing)),
 				$author$project$Main$onDragOver($author$project$Main$DragOver),
-				$author$project$Main$onDrop($author$project$Main$Drop)
+				$author$project$Main$onDrop(
+				$author$project$Main$Drop($elm$core$Maybe$Nothing))
 			]),
 		_Utils_ap(
 			messageToast,
