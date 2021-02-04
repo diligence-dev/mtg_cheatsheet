@@ -1,12 +1,13 @@
 module Main exposing (..)
 
 import Browser
+import Browser.Dom as Dom
 import Debug
 import File exposing (File)
 import File.Download as Download
 import File.Select as Select
 import Html exposing (Attribute, Html, button, div, form, img, input, text)
-import Html.Attributes exposing (disabled, draggable, height, src, style, value, width)
+import Html.Attributes exposing (disabled, draggable, height, src, style, value, width, id)
 import Html.Events as Events
 import Http
 import Json.Decode as Decode
@@ -82,7 +83,7 @@ init _ =
 
 
 type Msg
-    = DoubleClick Int Int
+    = DoubleClick (Maybe Element) Int Int
     | Drag Element Int Int
     | DragEnd
     | DragOver
@@ -94,11 +95,13 @@ type Msg
     | Import
     | FileLoaded File
     | FileContentLoaded String
+    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp -> (model, Cmd.none)
         FileContentLoaded fileContent ->
             case Decode.decodeString (Decode.list elementDecoder) fileContent of
                 Err _ ->
@@ -184,8 +187,27 @@ update msg model =
         Input query ->
             ( { model | input = model.input |> Maybe.map (\input -> { input | query = query }) }, Cmd.none )
 
-        DoubleClick left top ->
-            ( { model | input = Just { left = left, top = top, query = "", isLoading = False } }, Cmd.none )
+        DoubleClick maybeElement left top ->
+            let
+                newModel =
+                    case maybeElement of
+                        Nothing ->
+                            { model | input = Just { left = left, top = top, query = "", isLoading = False } }
+
+                        Just element ->
+                            let
+                                newQuery =
+                                    if element.fontSize > 0 then
+                                        element.imageSource
+                                    else
+                                        ""
+                            in
+                            { model
+                                | input = Just { left = left, top = top, query = newQuery, isLoading = False }
+                                , elements = model.elements |> List.filter ((/=) element)
+                            }
+            in
+            ( newModel, Task.attempt (\_ -> NoOp) (Dom.focus "activeInput") )
 
         Drag element left top ->
             let
@@ -244,6 +266,7 @@ viewElement element =
             , style "top" <| String.fromInt top ++ "px"
             , style "z-index" <| String.fromInt zIndex
             , style "border-radius" "15px"
+            , onDoubleClick <| DoubleClick (Just element)
             , draggable "true"
             , onDragStart <| Drag element
             , onDragEnd DragEnd
@@ -282,6 +305,7 @@ view model =
                             , disabled isLoading
                             , Events.onInput Input
                             , value query
+                            , id "activeInput"
                             ]
                             []
                         ]
@@ -297,7 +321,7 @@ view model =
         , style "width" "50000px"
         , style "height" "50000px"
         , style "background-color" "green"
-        , onDoubleClick DoubleClick
+        , onDoubleClick <| DoubleClick Nothing
         , onDragOver DragOver
         , onDrop Drop
         ]
@@ -305,7 +329,9 @@ view model =
 
 
 onDoubleClick message =
-    Events.on "dblclick" <| Decode.map2 message (Decode.field "clientX" Decode.int) (Decode.field "clientY" Decode.int)
+    Events.stopPropagationOn "dblclick" <|
+        Decode.map (\msg -> ( msg, True )) <|
+            Decode.map2 message (Decode.field "clientX" Decode.int) (Decode.field "clientY" Decode.int)
 
 
 onDragStart msg =
