@@ -7,7 +7,7 @@ import File exposing (File)
 import File.Download as Download
 import File.Select as Select
 import Html exposing (Attribute, Html, button, div, form, img, input, text)
-import Html.Attributes exposing (disabled, draggable, height, src, style, value, width, id)
+import Html.Attributes exposing (disabled, draggable, height, id, src, style, value, width)
 import Html.Events as Events
 import Http
 import Json.Decode as Decode
@@ -89,6 +89,7 @@ type Msg
     | DragOver
     | Drop Int Int
     | Input String
+    | InputLostFocus
     | Submit
     | Response Int Int (Result Http.Error String)
     | Export
@@ -101,7 +102,9 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp -> (model, Cmd.none)
+        NoOp ->
+            ( model, Cmd.none )
+
         FileContentLoaded fileContent ->
             case Decode.decodeString (Decode.list elementDecoder) fileContent of
                 Err _ ->
@@ -184,6 +187,9 @@ update msg model =
                             in
                             ( newModel, Cmd.none )
 
+        InputLostFocus ->
+            ( { model | input = Nothing }, Cmd.none )
+
         Input query ->
             ( { model | input = model.input |> Maybe.map (\input -> { input | query = query }) }, Cmd.none )
 
@@ -199,6 +205,7 @@ update msg model =
                                 newQuery =
                                     if element.fontSize > 0 then
                                         element.imageSource
+
                                     else
                                         ""
                             in
@@ -306,6 +313,7 @@ view model =
                             , Events.onInput Input
                             , value query
                             , id "activeInput"
+                            , Events.onBlur InputLostFocus
                             ]
                             []
                         ]
