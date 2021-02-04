@@ -12,15 +12,16 @@ import Html.Events as Events
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
+import MessageToast exposing (MessageToast)
 import Task
 
 
-log =
-    Debug.log "stuff"
+--log =
+--    Debug.log
 
 
 main =
-    Browser.element { init = init, subscriptions = always Sub.none, update = update, view = view }
+    Browser.element { init = init, subscriptions = subscriptions, update = update, view = view }
 
 
 type alias Element =
@@ -58,7 +59,14 @@ type alias Model =
     { elements : List Element
     , beingDragged : Maybe ( Element, Int, Int )
     , input : Maybe { left : Int, top : Int, query : String, isLoading : Bool }
+    , messageToast : MessageToast Msg
     }
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    -- MessageToast provides a subscription to close automatically which is easy to use.
+    MessageToast.subscriptions model.messageToast
 
 
 nextZIndex : List Element -> Int
@@ -77,6 +85,7 @@ init _ =
                 ]
             , beingDragged = Nothing
             , input = Nothing
+            , messageToast = MessageToast.init UpdatedSimpleMessageToast
             }
     in
     ( model, Cmd.none )
@@ -97,18 +106,26 @@ type Msg
     | FileLoaded File
     | FileContentLoaded String
     | NoOp
+    | UpdatedSimpleMessageToast (MessageToast Msg)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        UpdatedSimpleMessageToast updatedMessageToast ->
+            ( { model | messageToast = updatedMessageToast }, Cmd.none )
+
         NoOp ->
             ( model, Cmd.none )
 
         FileContentLoaded fileContent ->
             case Decode.decodeString (Decode.list elementDecoder) fileContent of
                 Err _ ->
-                    ( model |> Debug.log "error", Cmd.none )
+                    let
+                        newMessageToast =
+                            model.messageToast |> MessageToast.warning |> MessageToast.withMessage "could not load file"
+                    in
+                    ( { model | messageToast = newMessageToast }, Cmd.none )
 
                 Ok elements ->
                     ( { model | elements = elements }, Cmd.none )
@@ -132,7 +149,17 @@ update msg model =
         Response left top result ->
             case result of
                 Err _ ->
-                    ( { model | input = model.input |> Maybe.map (\input -> { input | isLoading = False, query = input.query ++ " - not found" }) }, Cmd.none )
+                    let
+                        newMessageToast =
+                            model.messageToast |> MessageToast.warning |> MessageToast.withMessage "card not found"
+
+                        newModel =
+                            { model
+                                | input = model.input |> Maybe.map (\input -> { input | isLoading = False })
+                                , messageToast = newMessageToast
+                            }
+                    in
+                    ( newModel, Cmd.none )
 
                 Ok imageSource ->
                     let
@@ -323,6 +350,9 @@ view model =
             [ button [ Events.onClick Export ] [ text "export" ]
             , button [ Events.onClick Import ] [ text "import" ]
             ]
+
+        messageToast =
+            [ MessageToast.view model.messageToast ]
     in
     div
         [ style "position" "absolute"
@@ -333,7 +363,7 @@ view model =
         , onDragOver DragOver
         , onDrop Drop
         ]
-        (importExportButtons ++ maybeInput ++ List.map viewElement model.elements)
+        (messageToast ++ importExportButtons ++ maybeInput ++ List.map viewElement model.elements)
 
 
 onDoubleClick message =
