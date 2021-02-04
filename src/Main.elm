@@ -26,25 +26,28 @@ type alias Element =
     { left : Int
     , top : Int
     , imageSource : String
+    , zIndex : Int
     }
 
 
 encodeElement : Element -> Encode.Value
-encodeElement {left, top, imageSource} =
+encodeElement {left, top, zIndex, imageSource} =
     Encode.object
         [ ("left", Encode.int left)
         , ("top", Encode.int top)
         , ("imageSource", Encode.string imageSource)
+        , ("zIndex", Encode.int zIndex)
         ]
 
 
 elementDecoder : Decode.Decoder Element
 elementDecoder =
-    Decode.map3
+    Decode.map4
         Element
         (Decode.field "left" Decode.int)
         (Decode.field "top" Decode.int)
         (Decode.field "imageSource" Decode.string)
+        (Decode.field "zIndex" Decode.int)
 
 
 
@@ -55,11 +58,18 @@ type alias Model =
     }
 
 
+nextZIndex : List Element -> Int
+nextZIndex elements =
+    (elements |> List.map .zIndex |> List.maximum |> Maybe.withDefault 0) + 1
+
 init : () -> ( Model, Cmd Msg )
 init _ =
     let
         model =
-            { elements = []
+            { elements =
+                [ Element 50 50 "https://c1.scryfall.com/file/scryfall-cards/normal/front/6/e/6e4c9574-1ee3-461e-848f-8f02c6a8b7ee.jpg?1594735950" 0
+                , Element 500 500 "https://c1.scryfall.com/file/scryfall-cards/normal/front/5/c/5c23869b-c99a-49dd-9e29-fcc0eb63fad1.jpg?1594734879" 1
+                ]
             , beingDragged = Nothing
             , input = Nothing
             }
@@ -112,8 +122,8 @@ update msg model =
                     let
                         newModel =
                             { model
-                                | elements = Element left top imageSource :: model.elements
-                                , input = Nothing
+                                | input = Nothing
+                                , elements = (Element left top imageSource (nextZIndex model.elements)) :: model.elements
                             }
                     in
                     ( newModel, Cmd.none )
@@ -181,7 +191,11 @@ update msg model =
                 Just (element, startLeft, startTop) ->
                     let
                         repositionedElement =
-                            { element | left = element.left + (left - startLeft), top = element.top + (top - startTop) }
+                            { element
+                                | left = element.left + (left - startLeft)
+                                , top = element.top + (top - startTop)
+                                , zIndex = nextZIndex model.elements
+                            }
                     in
                     ( { model | beingDragged = Nothing, elements = repositionedElement :: model.elements }, Cmd.none )
 
@@ -189,7 +203,7 @@ update msg model =
 viewElement : Element -> Html Msg
 viewElement element =
     let
-        { left, top, imageSource } =
+        { left, top, imageSource, zIndex } =
             element
     in
     img
@@ -197,6 +211,7 @@ viewElement element =
         , style "position" "absolute"
         , style "left" <| String.fromInt left ++ "px"
         , style "top" <| String.fromInt top ++ "px"
+        , style "zIndex" <| String.fromInt zIndex
         , width 240
         , draggable "true"
         , onDragStart <| Drag element
