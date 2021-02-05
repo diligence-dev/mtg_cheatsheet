@@ -17,7 +17,7 @@ import Task
 
 
 --log =
---    Debug.log
+--    Debug.log "stuff"
 
 
 main =
@@ -96,7 +96,7 @@ type Msg
     | Drag Element Int Int
     | DragEnd
     | DragOver
-    | Drop (Maybe String) Int Int
+    | Drop String Int Int
     | Input String
     | InputLostFocus
     | Submit
@@ -271,21 +271,31 @@ update msg model =
         DragOver ->
             ( model, Cmd.none )
 
-        Drop link left top ->
-            case model.beingDragged of
-                Nothing ->
-                    ( model, Cmd.none )
 
-                Just ( element, startLeft, startTop ) ->
-                    let
-                        repositionedElement =
-                            { element
-                                | left = element.left + (left - startLeft)
-                                , top = element.top + (top - startTop)
-                                , zIndex = nextZIndex model.elements
-                            }
-                    in
-                    ( { model | beingDragged = Nothing, elements = repositionedElement :: model.elements }, Cmd.none )
+        Drop url left top ->
+            let
+                (newLeft, newTop) =
+                    case model.beingDragged of
+                        Nothing -> (left, top)
+                        Just (element, leftStart, topStart) ->
+                            (element.left + (left - leftStart), element.top + (top - topStart))
+                newUrl =
+                    if url |> String.startsWith "https://scryfall.com/card/" then
+                        let
+                            editionAndId = url |> String.split "/" |> List.drop 4 |> List.take 2
+                        in
+                        "https://api.scryfall.com/cards/" ++ (String.join "/" editionAndId) ++ "?format=image&version=normal"
+                    else
+                        url
+
+                newModel =
+                    { model
+                        | input = Nothing
+                        , elements = Element newLeft newTop newUrl 0 -1 :: model.elements
+                        , beingDragged = Nothing
+                    }
+            in
+            ( newModel, Cmd.none )
 
 
 viewElement : Element -> Html Msg
@@ -363,7 +373,8 @@ view model =
         , style "background-color" "green"
         , onDoubleClick <| DoubleClick Nothing
         , onDragOver DragOver
-        , onDrop <| Drop Nothing
+        , onDropData Drop
+        , id "elmroot"
         ]
         (messageToast ++ importExportButtons ++ maybeInput ++ List.map viewElement model.elements)
 
@@ -389,7 +400,10 @@ onDragOver msg =
         Decode.succeed ( msg, True )
 
 
-onDrop message =
-    Events.preventDefaultOn "drop" <|
-        Decode.map (\msg -> ( msg, True )) <|
-            Decode.map2 message (Decode.field "clientX" Decode.int) (Decode.field "clientY" Decode.int)
+onDropData message =
+    Events.on "dropdata" <|
+        Decode.map3
+            message
+                (Decode.at [ "detail", "data" ] Decode.string)
+                (Decode.at [ "detail", "left" ] Decode.int)
+                (Decode.at [ "detail", "top" ] Decode.int)
