@@ -17,7 +17,7 @@ import Task
 
 
 --log =
---    Debug.log "stuff"
+    --Debug.log "stuff"
 
 
 main =
@@ -274,28 +274,34 @@ update msg model =
 
         Drop url left top ->
             let
-                (newLeft, newTop) =
-                    case model.beingDragged of
-                        Nothing -> (left, top)
-                        Just (element, leftStart, topStart) ->
-                            (element.left + (left - leftStart), element.top + (top - topStart))
-                newUrl =
-                    if url |> String.startsWith "https://scryfall.com/card/" then
-                        let
-                            editionAndId = url |> String.split "/" |> List.drop 4 |> List.take 2
-                        in
-                        "https://api.scryfall.com/cards/" ++ (String.join "/" editionAndId) ++ "?format=image&version=normal"
-                    else
-                        url
-
-                newModel =
-                    { model
-                        | input = Nothing
-                        , elements = Element newLeft newTop newUrl 0 -1 :: model.elements
-                        , beingDragged = Nothing
-                    }
+                zIndex = nextZIndex model.elements
             in
-            ( newModel, Cmd.none )
+            case model.beingDragged of
+                Nothing ->
+                    let
+                        newUrl =
+                            if url |> String.startsWith "https://scryfall.com/card/" then
+                                let
+                                    editionAndId = url |> String.split "/" |> List.drop 4 |> List.take 2
+                                in
+                                "https://api.scryfall.com/cards/" ++ (String.join "/" editionAndId) ++ "?format=image&version=normal"
+                            else
+                                url
+
+                        newModel = { model | elements = Element left top newUrl zIndex -1 :: model.elements }
+                    in
+                    ( newModel, Cmd.none )
+                Just (element, leftStart, topStart) ->
+                    let
+                        newLeft = element.left + (left - leftStart)
+                        newTop = element.top + (top - topStart)
+                        newModel =
+                            { model
+                                | elements = { element | left = newLeft, top = newTop, zIndex = zIndex } :: model.elements
+                                , beingDragged = Nothing
+                            }
+                    in
+                    (newModel, Cmd.none)
 
 
 viewElement : Element -> Html Msg

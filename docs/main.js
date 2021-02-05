@@ -5160,25 +5160,25 @@ var $elm$core$Array$treeFromBuilder = F2(
 	});
 var $elm$core$Array$builderToArray = F2(
 	function (reverseNodeList, builder) {
-		if (!builder.a) {
+		if (!builder.b) {
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.c),
+				$elm$core$Elm$JsArray$length(builder.d),
 				$elm$core$Array$shiftStep,
 				$elm$core$Elm$JsArray$empty,
-				builder.c);
+				builder.d);
 		} else {
-			var treeLen = builder.a * $elm$core$Array$branchFactor;
+			var treeLen = builder.b * $elm$core$Array$branchFactor;
 			var depth = $elm$core$Basics$floor(
 				A2($elm$core$Basics$logBase, $elm$core$Array$branchFactor, treeLen - 1));
 			var correctNodeList = reverseNodeList ? $elm$core$List$reverse(builder.e) : builder.e;
-			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.a);
+			var tree = A2($elm$core$Array$treeFromBuilder, correctNodeList, builder.b);
 			return A4(
 				$elm$core$Array$Array_elm_builtin,
-				$elm$core$Elm$JsArray$length(builder.c) + treeLen,
+				$elm$core$Elm$JsArray$length(builder.d) + treeLen,
 				A2($elm$core$Basics$max, 5, depth * $elm$core$Array$shiftStep),
 				tree,
-				builder.c);
+				builder.d);
 		}
 	});
 var $elm$core$Basics$idiv = _Basics_idiv;
@@ -5191,7 +5191,7 @@ var $elm$core$Array$initializeHelp = F5(
 				return A2(
 					$elm$core$Array$builderToArray,
 					false,
-					{e: nodeList, a: (len / $elm$core$Array$branchFactor) | 0, c: tail});
+					{e: nodeList, b: (len / $elm$core$Array$branchFactor) | 0, d: tail});
 			} else {
 				var leaf = $elm$core$Array$Leaf(
 					A3($elm$core$Elm$JsArray$initialize, $elm$core$Array$branchFactor, fromIndex, fn));
@@ -5539,7 +5539,7 @@ var $elm$core$Task$perform = F2(
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$Main$Element = F5(
 	function (left, top, imageSource, zIndex, fontSize) {
-		return {O: fontSize, X: imageSource, o: left, r: top, Y: zIndex};
+		return {O: fontSize, Y: imageSource, l: left, o: top, X: zIndex};
 	});
 var $author$project$Main$UpdatedSimpleMessageToast = function (a) {
 	return {$: 14, a: a};
@@ -5560,14 +5560,14 @@ var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	var model = {
 		u: $elm$core$Maybe$Nothing,
-		d: _List_fromArray(
+		a: _List_fromArray(
 			[
 				A5($author$project$Main$Element, 50, 50, 'https://c1.scryfall.com/file/scryfall-cards/normal/front/6/e/6e4c9574-1ee3-461e-848f-8f02c6a8b7ee.jpg?1594735950', 0, -1),
 				A5($author$project$Main$Element, 500, 500, 'https://c1.scryfall.com/file/scryfall-cards/normal/front/5/c/5c23869b-c99a-49dd-9e29-fcc0eb63fad1.jpg?1594734879', 1, -1),
 				A5($author$project$Main$Element, 50, 500, 'snow', 1, 40)
 			]),
 		f: $elm$core$Maybe$Nothing,
-		p: $mercurymedia$elm_message_toast$MessageToast$init($author$project$Main$UpdatedSimpleMessageToast)
+		q: $mercurymedia$elm_message_toast$MessageToast$init($author$project$Main$UpdatedSimpleMessageToast)
 	};
 	return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 };
@@ -6151,7 +6151,7 @@ var $mercurymedia$elm_message_toast$MessageToast$subscriptions = function (messa
 	}
 };
 var $author$project$Main$subscriptions = function (model) {
-	return $mercurymedia$elm_message_toast$MessageToast$subscriptions(model.p);
+	return $mercurymedia$elm_message_toast$MessageToast$subscriptions(model.q);
 };
 var $author$project$Main$FileContentLoaded = function (a) {
 	return {$: 12, a: a};
@@ -6236,10 +6236,10 @@ var $elm$json$Json$Encode$object = function (pairs) {
 };
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Main$encodeElement = function (_v0) {
-	var left = _v0.o;
-	var top = _v0.r;
-	var zIndex = _v0.Y;
-	var imageSource = _v0.X;
+	var left = _v0.l;
+	var top = _v0.o;
+	var zIndex = _v0.X;
+	var imageSource = _v0.Y;
 	var fontSize = _v0.O;
 	return $elm$json$Json$Encode$object(
 		_List_fromArray(
@@ -6942,6 +6942,37 @@ var $elm$core$Maybe$map = F2(
 		}
 	});
 var $elm$core$Basics$neq = _Utils_notEqual;
+var $elm$core$List$maximum = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(
+			A3($elm$core$List$foldl, $elm$core$Basics$max, x, xs));
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (!maybe.$) {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $author$project$Main$nextZIndex = function (elements) {
+	return A2(
+		$elm$core$Maybe$withDefault,
+		0,
+		$elm$core$List$maximum(
+			A2(
+				$elm$core$List$map,
+				function ($) {
+					return $.X;
+				},
+				elements))) + 1;
+};
 var $elm$file$File$Download$string = F3(
 	function (name, mime, content) {
 		return A2(
@@ -6959,18 +6990,9 @@ var $elm$core$Tuple$pair = F2(
 var $mercurymedia$elm_message_toast$MessageToast$warning = function (messageToast) {
 	return A2(
 		$elm$core$Tuple$pair,
-		{v: $mercurymedia$elm_message_toast$MessageToast$Undefined, n: 0, D: 3},
+		{v: $mercurymedia$elm_message_toast$MessageToast$Undefined, p: 0, D: 3},
 		messageToast);
 };
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (!maybe.$) {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var $mercurymedia$elm_message_toast$MessageToast$Message = function (a) {
 	return {$: 1, a: a};
 };
@@ -6992,7 +7014,7 @@ var $mercurymedia$elm_message_toast$MessageToast$appendToList = F2(
 			A2(
 				$elm$core$Maybe$map,
 				function ($) {
-					return $.n;
+					return $.p;
 				},
 				$elm$core$List$head(toasts)));
 		return A2(
@@ -7007,7 +7029,7 @@ var $mercurymedia$elm_message_toast$MessageToast$appendToList = F2(
 						[
 							_Utils_update(
 							toastMessage,
-							{n: lastUsedId + 1})
+							{p: lastUsedId + 1})
 						]),
 					toasts)));
 	});
@@ -7033,7 +7055,7 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{p: updatedMessageToast}),
+						{q: updatedMessageToast}),
 					$elm$core$Platform$Cmd$none);
 			case 13:
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
@@ -7047,18 +7069,18 @@ var $author$project$Main$update = F2(
 					var newMessageToast = A2(
 						$mercurymedia$elm_message_toast$MessageToast$withMessage,
 						'could not load file',
-						$mercurymedia$elm_message_toast$MessageToast$warning(model.p));
+						$mercurymedia$elm_message_toast$MessageToast$warning(model.q));
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{p: newMessageToast}),
+							{q: newMessageToast}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					var elements = _v1.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{d: elements}),
+							{a: elements}),
 						$elm$core$Platform$Cmd$none);
 				}
 			case 11:
@@ -7078,7 +7100,7 @@ var $author$project$Main$update = F2(
 							['application/json']),
 						$author$project$Main$FileLoaded));
 			case 9:
-				var json = A2($elm$json$Json$Encode$list, $author$project$Main$encodeElement, model.d);
+				var json = A2($elm$json$Json$Encode$list, $author$project$Main$encodeElement, model.a);
 				var command = A3(
 					$elm$file$File$Download$string,
 					'mtg_cheatsheet.json',
@@ -7093,7 +7115,7 @@ var $author$project$Main$update = F2(
 					var newMessageToast = A2(
 						$mercurymedia$elm_message_toast$MessageToast$withMessage,
 						'card not found',
-						$mercurymedia$elm_message_toast$MessageToast$warning(model.p));
+						$mercurymedia$elm_message_toast$MessageToast$warning(model.q));
 					var newModel = _Utils_update(
 						model,
 						{
@@ -7105,7 +7127,7 @@ var $author$project$Main$update = F2(
 										{P: false});
 								},
 								model.f),
-							p: newMessageToast
+							q: newMessageToast
 						});
 					return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
 				} else {
@@ -7113,10 +7135,10 @@ var $author$project$Main$update = F2(
 					var newModel = _Utils_update(
 						model,
 						{
-							d: A2(
+							a: A2(
 								$elm$core$List$cons,
 								A5($author$project$Main$Element, left, top, imageSource, 0, -1),
-								model.d),
+								model.a),
 							f: $elm$core$Maybe$Nothing
 						});
 					return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
@@ -7153,7 +7175,7 @@ var $author$project$Main$update = F2(
 								{
 									aQ: A2(
 										$elm$http$Http$expectJson,
-										A2($author$project$Main$Response, input.o, input.r),
+										A2($author$project$Main$Response, input.l, input.o),
 										A2(
 											$elm$json$Json$Decode$at,
 											_List_fromArray(
@@ -7174,15 +7196,15 @@ var $author$project$Main$update = F2(
 								$elm$core$String$words(input.y)));
 						var newElement = A5(
 							$author$project$Main$Element,
+							input.l,
 							input.o,
-							input.r,
 							elementText,
 							0,
 							A2($elm$core$Basics$max, fontSize, 4));
 						var newModel = _Utils_update(
 							model,
 							{
-								d: A2($elm$core$List$cons, newElement, model.d),
+								a: A2($elm$core$List$cons, newElement, model.a),
 								f: $elm$core$Maybe$Nothing
 							});
 						return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
@@ -7220,20 +7242,20 @@ var $author$project$Main$update = F2(
 							model,
 							{
 								f: $elm$core$Maybe$Just(
-									{P: false, o: left, y: '', r: top})
+									{P: false, l: left, y: '', o: top})
 							});
 					} else {
 						var element = maybeElement.a;
-						var newQuery = (element.O > 0) ? ($elm$core$String$fromInt(element.O) + (' ' + element.X)) : '';
+						var newQuery = (element.O > 0) ? ($elm$core$String$fromInt(element.O) + (' ' + element.Y)) : '';
 						return _Utils_update(
 							model,
 							{
-								d: A2(
+								a: A2(
 									$elm$core$List$filter,
 									$elm$core$Basics$neq(element),
-									model.d),
+									model.a),
 								f: $elm$core$Maybe$Just(
-									{P: false, o: left, y: newQuery, r: top})
+									{P: false, l: left, y: newQuery, o: top})
 							});
 					}
 				}();
@@ -7266,10 +7288,10 @@ var $author$project$Main$update = F2(
 						{
 							u: $elm$core$Maybe$Just(
 								_Utils_Tuple3(element, left, top)),
-							d: A2(
+							a: A2(
 								$elm$core$List$filter,
 								$elm$core$Basics$neq(element),
-								_Utils_ap(model.d, lostElementList))
+								_Utils_ap(model.a, lostElementList))
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 2:
@@ -7284,7 +7306,7 @@ var $author$project$Main$update = F2(
 							model,
 							{
 								u: $elm$core$Maybe$Nothing,
-								d: A2($elm$core$List$cons, lostElement, model.d)
+								a: A2($elm$core$List$cons, lostElement, model.a)
 							}),
 						$elm$core$Platform$Cmd$none);
 				}
@@ -7294,45 +7316,52 @@ var $author$project$Main$update = F2(
 				var url = msg.a;
 				var left = msg.b;
 				var top = msg.c;
-				var newUrl = function () {
-					if (A2($elm$core$String$startsWith, 'https://scryfall.com/card/', url)) {
-						var editionAndId = A2(
-							$elm$core$List$take,
-							2,
-							A2(
-								$elm$core$List$drop,
-								4,
-								A2($elm$core$String$split, '/', url)));
-						return 'https://api.scryfall.com/cards/' + (A2($elm$core$String$join, '/', editionAndId) + '?format=image&version=normal');
-					} else {
-						return url;
-					}
-				}();
-				var _v11 = function () {
-					var _v12 = model.u;
-					if (_v12.$ === 1) {
-						return _Utils_Tuple2(left, top);
-					} else {
-						var _v13 = _v12.a;
-						var element = _v13.a;
-						var leftStart = _v13.b;
-						var topStart = _v13.c;
-						return _Utils_Tuple2(element.o + (left - leftStart), element.r + (top - topStart));
-					}
-				}();
-				var newLeft = _v11.a;
-				var newTop = _v11.b;
-				var newModel = _Utils_update(
-					model,
-					{
-						u: $elm$core$Maybe$Nothing,
-						d: A2(
-							$elm$core$List$cons,
-							A5($author$project$Main$Element, newLeft, newTop, newUrl, 0, -1),
-							model.d),
-						f: $elm$core$Maybe$Nothing
-					});
-				return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+				var zIndex = $author$project$Main$nextZIndex(model.a);
+				var _v11 = model.u;
+				if (_v11.$ === 1) {
+					var newUrl = function () {
+						if (A2($elm$core$String$startsWith, 'https://scryfall.com/card/', url)) {
+							var editionAndId = A2(
+								$elm$core$List$take,
+								2,
+								A2(
+									$elm$core$List$drop,
+									4,
+									A2($elm$core$String$split, '/', url)));
+							return 'https://api.scryfall.com/cards/' + (A2($elm$core$String$join, '/', editionAndId) + '?format=image&version=normal');
+						} else {
+							return url;
+						}
+					}();
+					var newModel = _Utils_update(
+						model,
+						{
+							a: A2(
+								$elm$core$List$cons,
+								A5($author$project$Main$Element, left, top, newUrl, zIndex, -1),
+								model.a)
+						});
+					return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+				} else {
+					var _v12 = _v11.a;
+					var element = _v12.a;
+					var leftStart = _v12.b;
+					var topStart = _v12.c;
+					var newTop = element.o + (top - topStart);
+					var newLeft = element.l + (left - leftStart);
+					var newModel = _Utils_update(
+						model,
+						{
+							u: $elm$core$Maybe$Nothing,
+							a: A2(
+								$elm$core$List$cons,
+								_Utils_update(
+									element,
+									{l: newLeft, o: newTop, X: zIndex}),
+								model.a)
+						});
+					return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
+				}
 		}
 	});
 var $author$project$Main$DoubleClick = F3(
@@ -7859,7 +7888,7 @@ var $mercurymedia$elm_message_toast$MessageToast$view = function (_v0) {
 				A2(
 					$elm$core$List$filter,
 					function (toast) {
-						return !_Utils_eq(toast.n, toastMessage.n);
+						return !_Utils_eq(toast.p, toastMessage.p);
 					},
 					toasts)));
 	};
@@ -7927,10 +7956,10 @@ var $elm$html$Html$Attributes$width = function (n) {
 };
 var $author$project$Main$viewElement = function (element) {
 	var _v0 = element;
-	var left = _v0.o;
-	var top = _v0.r;
-	var imageSource = _v0.X;
-	var zIndex = _v0.Y;
+	var left = _v0.l;
+	var top = _v0.o;
+	var imageSource = _v0.Y;
+	var zIndex = _v0.X;
 	var fontSize = _v0.O;
 	var commonAttributes = _List_fromArray(
 		[
@@ -7992,15 +8021,15 @@ var $author$project$Main$viewElement = function (element) {
 var $author$project$Main$view = function (model) {
 	var messageToast = _List_fromArray(
 		[
-			$mercurymedia$elm_message_toast$MessageToast$view(model.p)
+			$mercurymedia$elm_message_toast$MessageToast$view(model.q)
 		]);
 	var maybeInput = function () {
 		var _v0 = model.f;
 		if (_v0.$ === 1) {
 			return _List_Nil;
 		} else {
-			var left = _v0.a.o;
-			var top = _v0.a.r;
+			var left = _v0.a.l;
+			var top = _v0.a.o;
 			var query = _v0.a.y;
 			var isLoading = _v0.a.P;
 			return _List_fromArray(
@@ -8089,7 +8118,7 @@ var $author$project$Main$view = function (model) {
 				importExportButtons,
 				_Utils_ap(
 					maybeInput,
-					A2($elm$core$List$map, $author$project$Main$viewElement, model.d)))));
+					A2($elm$core$List$map, $author$project$Main$viewElement, model.a)))));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
 	{aU: $author$project$Main$init, a3: $author$project$Main$subscriptions, a6: $author$project$Main$update, a8: $author$project$Main$view});
