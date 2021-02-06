@@ -784,11 +784,11 @@ function _Debug_crash_UNUSED(identifier, fact1, fact2, fact3, fact4)
 
 function _Debug_regionToString(region)
 {
-	if (region.ac.Q === region.ah.Q)
+	if (region.ae.S === region.aj.S)
 	{
-		return 'on line ' + region.ac.Q;
+		return 'on line ' + region.ae.S;
 	}
-	return 'on lines ' + region.ac.Q + ' through ' + region.ah.Q;
+	return 'on lines ' + region.ae.S + ' through ' + region.aj.S;
 }
 
 
@@ -1857,9 +1857,9 @@ var _Platform_worker = F4(function(impl, flagDecoder, debugMetadata, args)
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aU,
-		impl.a6,
-		impl.a3,
+		impl.aW,
+		impl.a8,
+		impl.a5,
 		function() { return function() {} }
 	);
 });
@@ -2705,8 +2705,8 @@ var _VirtualDom_mapEventRecord = F2(function(func, record)
 {
 	return {
 		w: func(record.w),
-		ad: record.ad,
-		aa: record.aa
+		af: record.af,
+		ac: record.ac
 	}
 });
 
@@ -2975,10 +2975,10 @@ function _VirtualDom_makeCallback(eventNode, initialHandler)
 
 		var value = result.a;
 		var message = !tag ? value : tag < 3 ? value.a : value.w;
-		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.ad;
+		var stopPropagation = tag == 1 ? value.b : tag == 3 && value.af;
 		var currentEventNode = (
 			stopPropagation && event.stopPropagation(),
-			(tag == 2 ? value.b : tag == 3 && value.aa) && event.preventDefault(),
+			(tag == 2 ? value.b : tag == 3 && value.ac) && event.preventDefault(),
 			eventNode
 		);
 		var tagger;
@@ -3928,11 +3928,11 @@ var _Browser_element = _Debugger_element || F4(function(impl, flagDecoder, debug
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aU,
-		impl.a6,
-		impl.a3,
+		impl.aW,
+		impl.a8,
+		impl.a5,
 		function(sendToApp, initialModel) {
-			var view = impl.a8;
+			var view = impl.ba;
 			/**/
 			var domNode = args['node'];
 			//*/
@@ -3964,12 +3964,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 	return _Platform_initialize(
 		flagDecoder,
 		args,
-		impl.aU,
-		impl.a6,
-		impl.a3,
+		impl.aW,
+		impl.a8,
+		impl.a5,
 		function(sendToApp, initialModel) {
-			var divertHrefToApp = impl.ab && impl.ab(sendToApp)
-			var view = impl.a8;
+			var divertHrefToApp = impl.ad && impl.ad(sendToApp)
+			var view = impl.ba;
 			var title = _VirtualDom_doc.title;
 			var bodyNode = _VirtualDom_doc.body;
 			var currNode = _VirtualDom_virtualize(bodyNode);
@@ -3977,12 +3977,12 @@ var _Browser_document = _Debugger_document || F4(function(impl, flagDecoder, deb
 			{
 				_VirtualDom_divertHrefToApp = divertHrefToApp;
 				var doc = view(model);
-				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aM);
+				var nextNode = _VirtualDom_node('body')(_List_Nil)(doc.aO);
 				var patches = _VirtualDom_diff(currNode, nextNode);
 				bodyNode = _VirtualDom_applyPatches(bodyNode, currNode, patches, sendToApp);
 				currNode = nextNode;
 				_VirtualDom_divertHrefToApp = 0;
-				(title !== doc.a5) && (_VirtualDom_doc.title = title = doc.a5);
+				(title !== doc.a7) && (_VirtualDom_doc.title = title = doc.a7);
 			});
 		}
 	);
@@ -4038,12 +4038,12 @@ function _Browser_makeAnimator(model, draw)
 
 function _Browser_application(impl)
 {
-	var onUrlChange = impl.aX;
-	var onUrlRequest = impl.aY;
+	var onUrlChange = impl.aZ;
+	var onUrlRequest = impl.a_;
 	var key = function() { key.a(onUrlChange(_Browser_getUrl())); };
 
 	return _Browser_document({
-		ab: function(sendToApp)
+		ad: function(sendToApp)
 		{
 			key.a = sendToApp;
 			_Browser_window.addEventListener('popstate', key);
@@ -4059,9 +4059,9 @@ function _Browser_application(impl)
 					var next = $elm$url$Url$fromString(href).a;
 					sendToApp(onUrlRequest(
 						(next
-							&& curr.av === next.av
-							&& curr.am === next.am
-							&& curr.as.a === next.as.a
+							&& curr.ax === next.ax
+							&& curr.ao === next.ao
+							&& curr.au.a === next.au.a
 						)
 							? $elm$browser$Browser$Internal(next)
 							: $elm$browser$Browser$External(href)
@@ -4069,13 +4069,13 @@ function _Browser_application(impl)
 				}
 			});
 		},
-		aU: function(flags)
+		aW: function(flags)
 		{
-			return A3(impl.aU, flags, _Browser_getUrl(), key);
+			return A3(impl.aW, flags, _Browser_getUrl(), key);
 		},
+		ba: impl.ba,
 		a8: impl.a8,
-		a6: impl.a6,
-		a3: impl.a3
+		a5: impl.a5
 	});
 }
 
@@ -4141,17 +4141,17 @@ var _Browser_decodeEvent = F2(function(decoder, event)
 function _Browser_visibilityInfo()
 {
 	return (typeof _VirtualDom_doc.hidden !== 'undefined')
-		? { aS: 'hidden', aN: 'visibilitychange' }
+		? { aU: 'hidden', aP: 'visibilitychange' }
 		:
 	(typeof _VirtualDom_doc.mozHidden !== 'undefined')
-		? { aS: 'mozHidden', aN: 'mozvisibilitychange' }
+		? { aU: 'mozHidden', aP: 'mozvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.msHidden !== 'undefined')
-		? { aS: 'msHidden', aN: 'msvisibilitychange' }
+		? { aU: 'msHidden', aP: 'msvisibilitychange' }
 		:
 	(typeof _VirtualDom_doc.webkitHidden !== 'undefined')
-		? { aS: 'webkitHidden', aN: 'webkitvisibilitychange' }
-		: { aS: 'hidden', aN: 'visibilitychange' };
+		? { aU: 'webkitHidden', aP: 'webkitvisibilitychange' }
+		: { aU: 'hidden', aP: 'visibilitychange' };
 }
 
 
@@ -4232,12 +4232,12 @@ var _Browser_call = F2(function(functionName, id)
 function _Browser_getViewport()
 {
 	return {
-		aA: _Browser_getScene(),
-		aF: {
-			aH: _Browser_window.pageXOffset,
-			aI: _Browser_window.pageYOffset,
-			aG: _Browser_doc.documentElement.clientWidth,
-			al: _Browser_doc.documentElement.clientHeight
+		aC: _Browser_getScene(),
+		aH: {
+			aJ: _Browser_window.pageXOffset,
+			aK: _Browser_window.pageYOffset,
+			aI: _Browser_doc.documentElement.clientWidth,
+			an: _Browser_doc.documentElement.clientHeight
 		}
 	};
 }
@@ -4247,8 +4247,8 @@ function _Browser_getScene()
 	var body = _Browser_doc.body;
 	var elem = _Browser_doc.documentElement;
 	return {
-		aG: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
-		al: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
+		aI: Math.max(body.scrollWidth, body.offsetWidth, elem.scrollWidth, elem.offsetWidth, elem.clientWidth),
+		an: Math.max(body.scrollHeight, body.offsetHeight, elem.scrollHeight, elem.offsetHeight, elem.clientHeight)
 	};
 }
 
@@ -4271,15 +4271,15 @@ function _Browser_getViewportOf(id)
 	return _Browser_withNode(id, function(node)
 	{
 		return {
-			aA: {
-				aG: node.scrollWidth,
-				al: node.scrollHeight
+			aC: {
+				aI: node.scrollWidth,
+				an: node.scrollHeight
 			},
-			aF: {
-				aH: node.scrollLeft,
-				aI: node.scrollTop,
-				aG: node.clientWidth,
-				al: node.clientHeight
+			aH: {
+				aJ: node.scrollLeft,
+				aK: node.scrollTop,
+				aI: node.clientWidth,
+				an: node.clientHeight
 			}
 		};
 	});
@@ -4309,18 +4309,18 @@ function _Browser_getElement(id)
 		var x = _Browser_window.pageXOffset;
 		var y = _Browser_window.pageYOffset;
 		return {
-			aA: _Browser_getScene(),
-			aF: {
-				aH: x,
-				aI: y,
-				aG: _Browser_doc.documentElement.clientWidth,
-				al: _Browser_doc.documentElement.clientHeight
+			aC: _Browser_getScene(),
+			aH: {
+				aJ: x,
+				aK: y,
+				aI: _Browser_doc.documentElement.clientWidth,
+				an: _Browser_doc.documentElement.clientHeight
 			},
-			aP: {
-				aH: x + rect.left,
-				aI: y + rect.top,
-				aG: rect.width,
-				al: rect.height
+			aR: {
+				aJ: x + rect.left,
+				aK: y + rect.top,
+				aI: rect.width,
+				an: rect.height
 			}
 		};
 	});
@@ -4411,25 +4411,25 @@ var _Http_toTask = F3(function(router, toTask, request)
 	return _Scheduler_binding(function(callback)
 	{
 		function done(response) {
-			callback(toTask(request.aQ.a(response)));
+			callback(toTask(request.aS.a(response)));
 		}
 
 		var xhr = new XMLHttpRequest();
 		xhr.addEventListener('error', function() { done($elm$http$Http$NetworkError_); });
 		xhr.addEventListener('timeout', function() { done($elm$http$Http$Timeout_); });
-		xhr.addEventListener('load', function() { done(_Http_toResponse(request.aQ.b, xhr)); });
-		$elm$core$Maybe$isJust(request.aE) && _Http_track(router, xhr, request.aE.a);
+		xhr.addEventListener('load', function() { done(_Http_toResponse(request.aS.b, xhr)); });
+		$elm$core$Maybe$isJust(request.aG) && _Http_track(router, xhr, request.aG.a);
 
 		try {
-			xhr.open(request.aV, request.a7, true);
+			xhr.open(request.aX, request.a9, true);
 		} catch (e) {
-			return done($elm$http$Http$BadUrl_(request.a7));
+			return done($elm$http$Http$BadUrl_(request.a9));
 		}
 
 		_Http_configureRequest(xhr, request);
 
-		request.aM.a && xhr.setRequestHeader('Content-Type', request.aM.a);
-		xhr.send(request.aM.b);
+		request.aO.a && xhr.setRequestHeader('Content-Type', request.aO.a);
+		xhr.send(request.aO.b);
 
 		return function() { xhr.c = true; xhr.abort(); };
 	});
@@ -4440,13 +4440,13 @@ var _Http_toTask = F3(function(router, toTask, request)
 
 function _Http_configureRequest(xhr, request)
 {
-	for (var headers = request.ak; headers.b; headers = headers.b) // WHILE_CONS
+	for (var headers = request.am; headers.b; headers = headers.b) // WHILE_CONS
 	{
 		xhr.setRequestHeader(headers.a.a, headers.a.b);
 	}
-	xhr.timeout = request.a4.a || 0;
-	xhr.responseType = request.aQ.d;
-	xhr.withCredentials = request.aK;
+	xhr.timeout = request.a6.a || 0;
+	xhr.responseType = request.aS.d;
+	xhr.withCredentials = request.aM;
 }
 
 
@@ -4467,10 +4467,10 @@ function _Http_toResponse(toBody, xhr)
 function _Http_toMetadata(xhr)
 {
 	return {
-		a7: xhr.responseURL,
-		a1: xhr.status,
-		a2: xhr.statusText,
-		ak: _Http_parseHeaders(xhr.getAllResponseHeaders())
+		a9: xhr.responseURL,
+		a3: xhr.status,
+		a4: xhr.statusText,
+		am: _Http_parseHeaders(xhr.getAllResponseHeaders())
 	};
 }
 
@@ -4565,15 +4565,15 @@ function _Http_track(router, xhr, tracker)
 	xhr.upload.addEventListener('progress', function(event) {
 		if (xhr.c) { return; }
 		_Scheduler_rawSpawn(A2($elm$core$Platform$sendToSelf, router, _Utils_Tuple2(tracker, $elm$http$Http$Sending({
-			a0: event.loaded,
-			aB: event.total
+			a2: event.loaded,
+			aD: event.total
 		}))));
 	});
 	xhr.addEventListener('progress', function(event) {
 		if (xhr.c) { return; }
 		_Scheduler_rawSpawn(A2($elm$core$Platform$sendToSelf, router, _Utils_Tuple2(tracker, $elm$http$Http$Receiving({
-			a_: event.loaded,
-			aB: event.lengthComputable ? $elm$core$Maybe$Just(event.total) : $elm$core$Maybe$Nothing
+			a0: event.loaded,
+			aD: event.lengthComputable ? $elm$core$Maybe$Just(event.total) : $elm$core$Maybe$Nothing
 		}))));
 	});
 }
@@ -5258,7 +5258,7 @@ var $elm$url$Url$Http = 0;
 var $elm$url$Url$Https = 1;
 var $elm$url$Url$Url = F6(
 	function (protocol, host, port_, path, query, fragment) {
-		return {aj: fragment, am: host, aq: path, as: port_, av: protocol, y: query};
+		return {al: fragment, ao: host, as: path, au: port_, ax: protocol, y: query};
 	});
 var $elm$core$String$contains = _String_contains;
 var $elm$core$String$length = _String_length;
@@ -5539,7 +5539,7 @@ var $elm$core$Task$perform = F2(
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$Main$Element = F5(
 	function (left, top, imageSource, zIndex, fontSize) {
-		return {O: fontSize, Y: imageSource, l: left, o: top, X: zIndex};
+		return {Q: fontSize, _: imageSource, l: left, o: top, Z: zIndex};
 	});
 var $author$project$Main$UpdatedSimpleMessageToast = function (a) {
 	return {$: 14, a: a};
@@ -5549,7 +5549,7 @@ var $mercurymedia$elm_message_toast$MessageToast$MessageToast = F2(
 		return {$: 0, a: a, b: b};
 	});
 var $mercurymedia$elm_message_toast$MessageToast$init = function (updateMsg) {
-	var config = {J: _List_Nil, K: _List_Nil, L: _List_Nil, M: _List_Nil, N: 8000, T: 4, W: updateMsg};
+	var config = {L: _List_Nil, M: _List_Nil, N: _List_Nil, O: _List_Nil, P: 8000, V: 4, Y: updateMsg};
 	return A2($mercurymedia$elm_message_toast$MessageToast$MessageToast, config, _List_Nil);
 };
 var $elm$core$Basics$negate = function (n) {
@@ -5567,7 +5567,9 @@ var $author$project$Main$init = function (_v0) {
 				A5($author$project$Main$Element, 50, 500, 'snow', 1, 40)
 			]),
 		f: $elm$core$Maybe$Nothing,
-		q: $mercurymedia$elm_message_toast$MessageToast$init($author$project$Main$UpdatedSimpleMessageToast)
+		G: 0,
+		q: $mercurymedia$elm_message_toast$MessageToast$init($author$project$Main$UpdatedSimpleMessageToast),
+		I: 0
 	};
 	return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 };
@@ -5577,7 +5579,7 @@ var $elm$time$Time$Every = F2(
 	});
 var $elm$time$Time$State = F2(
 	function (taggers, processes) {
-		return {au: processes, aD: taggers};
+		return {aw: processes, aF: taggers};
 	});
 var $elm$core$Dict$RBEmpty_elm_builtin = {$: -2};
 var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
@@ -5869,7 +5871,7 @@ var $elm$time$Time$spawnHelp = F3(
 	});
 var $elm$time$Time$onEffects = F3(
 	function (router, subs, _v0) {
-		var processes = _v0.au;
+		var processes = _v0.aw;
 		var rightStep = F3(
 			function (_v6, id, _v7) {
 				var spawns = _v7.a;
@@ -5938,7 +5940,7 @@ var $elm$time$Time$millisToPosix = $elm$core$Basics$identity;
 var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
 var $elm$time$Time$onSelfMsg = F3(
 	function (router, interval, state) {
-		var _v0 = A2($elm$core$Dict$get, interval, state.aD);
+		var _v0 = A2($elm$core$Dict$get, interval, state.aF);
 		if (_v0.$ === 1) {
 			return $elm$core$Task$succeed(state);
 		} else {
@@ -6141,9 +6143,9 @@ var $mercurymedia$elm_message_toast$MessageToast$subscriptions = function (messa
 		var toastMessage = _v0.a;
 		return A2(
 			$elm$time$Time$every,
-			config.N,
+			config.P,
 			function (_v1) {
-				return config.W(
+				return config.Y(
 					$mercurymedia$elm_message_toast$MessageToast$popOldestToast(messageToast));
 			});
 	} else {
@@ -6238,9 +6240,9 @@ var $elm$json$Json$Encode$string = _Json_wrap;
 var $author$project$Main$encodeElement = function (_v0) {
 	var left = _v0.l;
 	var top = _v0.o;
-	var zIndex = _v0.X;
-	var imageSource = _v0.Y;
-	var fontSize = _v0.O;
+	var zIndex = _v0.Z;
+	var imageSource = _v0._;
+	var fontSize = _v0.Q;
 	return $elm$json$Json$Encode$object(
 		_List_fromArray(
 			[
@@ -6709,7 +6711,7 @@ var $elm$http$Http$resolve = F2(
 			case 3:
 				var metadata = response.a;
 				return $elm$core$Result$Err(
-					$elm$http$Http$BadStatus(metadata.a1));
+					$elm$http$Http$BadStatus(metadata.a3));
 			default:
 				var body = response.b;
 				return A2(
@@ -6756,7 +6758,7 @@ var $elm$http$Http$Request = function (a) {
 };
 var $elm$http$Http$State = F2(
 	function (reqs, subs) {
-		return {ax: reqs, aC: subs};
+		return {az: reqs, aE: subs};
 	});
 var $elm$http$Http$init = $elm$core$Task$succeed(
 	A2($elm$http$Http$State, $elm$core$Dict$empty, _List_Nil));
@@ -6798,7 +6800,7 @@ var $elm$http$Http$updateReqs = F3(
 					return A2(
 						$elm$core$Task$andThen,
 						function (pid) {
-							var _v4 = req.aE;
+							var _v4 = req.aG;
 							if (_v4.$ === 1) {
 								return A3($elm$http$Http$updateReqs, router, otherCmds, reqs);
 							} else {
@@ -6828,7 +6830,7 @@ var $elm$http$Http$onEffects = F4(
 				return $elm$core$Task$succeed(
 					A2($elm$http$Http$State, reqs, subs));
 			},
-			A3($elm$http$Http$updateReqs, router, cmds, state.ax));
+			A3($elm$http$Http$updateReqs, router, cmds, state.az));
 	});
 var $elm$core$List$maybeCons = F3(
 	function (f, mx, xs) {
@@ -6871,7 +6873,7 @@ var $elm$http$Http$onSelfMsg = F3(
 				A2(
 					$elm$core$List$filterMap,
 					A3($elm$http$Http$maybeSend, router, tracker, progress),
-					state.aC)));
+					state.aE)));
 	});
 var $elm$http$Http$Cancel = function (a) {
 	return {$: 0, a: a};
@@ -6885,14 +6887,14 @@ var $elm$http$Http$cmdMap = F2(
 			var r = cmd.a;
 			return $elm$http$Http$Request(
 				{
-					aK: r.aK,
 					aM: r.aM,
-					aQ: A2(_Http_mapExpect, func, r.aQ),
-					ak: r.ak,
-					aV: r.aV,
-					a4: r.a4,
-					aE: r.aE,
-					a7: r.a7
+					aO: r.aO,
+					aS: A2(_Http_mapExpect, func, r.aS),
+					am: r.am,
+					aX: r.aX,
+					a6: r.a6,
+					aG: r.aG,
+					a9: r.a9
 				});
 		}
 	});
@@ -6915,11 +6917,11 @@ var $elm$http$Http$subscription = _Platform_leaf('Http');
 var $elm$http$Http$request = function (r) {
 	return $elm$http$Http$command(
 		$elm$http$Http$Request(
-			{aK: false, aM: r.aM, aQ: r.aQ, ak: r.ak, aV: r.aV, a4: r.a4, aE: r.aE, a7: r.a7}));
+			{aM: false, aO: r.aO, aS: r.aS, am: r.am, aX: r.aX, a6: r.a6, aG: r.aG, a9: r.a9}));
 };
 var $elm$http$Http$get = function (r) {
 	return $elm$http$Http$request(
-		{aM: $elm$http$Http$emptyBody, aQ: r.aQ, ak: _List_Nil, aV: 'GET', a4: $elm$core$Maybe$Nothing, aE: $elm$core$Maybe$Nothing, a7: r.a7});
+		{aO: $elm$http$Http$emptyBody, aS: r.aS, am: _List_Nil, aX: 'GET', a6: $elm$core$Maybe$Nothing, aG: $elm$core$Maybe$Nothing, a9: r.a9});
 };
 var $elm$json$Json$Decode$list = _Json_decodeList;
 var $elm$json$Json$Encode$list = F2(
@@ -6969,7 +6971,7 @@ var $author$project$Main$nextZIndex = function (elements) {
 			A2(
 				$elm$core$List$map,
 				function ($) {
-					return $.X;
+					return $.Z;
 				},
 				elements))) + 1;
 };
@@ -7022,7 +7024,7 @@ var $mercurymedia$elm_message_toast$MessageToast$appendToList = F2(
 			config,
 			A2(
 				$elm$core$List$take,
-				config.T,
+				config.V,
 				A2(
 					$elm$core$List$append,
 					_List_fromArray(
@@ -7050,6 +7052,14 @@ var $elm$core$String$words = _String_words;
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
+			case 15:
+				var leftScroll = msg.a;
+				var topScroll = msg.b;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{G: leftScroll, I: topScroll}),
+					$elm$core$Platform$Cmd$none);
 			case 14:
 				var updatedMessageToast = msg.a;
 				return _Utils_Tuple2(
@@ -7124,7 +7134,7 @@ var $author$project$Main$update = F2(
 								function (input) {
 									return _Utils_update(
 										input,
-										{P: false});
+										{R: false});
 								},
 								model.f),
 							q: newMessageToast
@@ -7169,11 +7179,11 @@ var $author$project$Main$update = F2(
 									f: $elm$core$Maybe$Just(
 										_Utils_update(
 											input,
-											{P: true}))
+											{R: true}))
 								});
 							var command = $elm$http$Http$get(
 								{
-									aQ: A2(
+									aS: A2(
 										$elm$http$Http$expectJson,
 										A2($author$project$Main$Response, input.l, input.o),
 										A2(
@@ -7181,7 +7191,7 @@ var $author$project$Main$update = F2(
 											_List_fromArray(
 												['data', '0', 'image_uris', 'normal']),
 											$elm$json$Json$Decode$string)),
-									a7: 'https://api.scryfall.com/cards/search?q=' + input.y
+									a9: 'https://api.scryfall.com/cards/search?q=' + input.y
 								});
 							return _Utils_Tuple2(newModel, command);
 						}
@@ -7234,19 +7244,21 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 0:
 				var maybeElement = msg.a;
-				var left = msg.b;
-				var top = msg.c;
+				var leftBeforeScroll = msg.b;
+				var topBeforeScroll = msg.c;
+				var top = topBeforeScroll + model.I;
+				var left = leftBeforeScroll + model.G;
 				var newModel = function () {
 					if (maybeElement.$ === 1) {
 						return _Utils_update(
 							model,
 							{
 								f: $elm$core$Maybe$Just(
-									{P: false, l: left, y: '', o: top})
+									{R: false, l: left, y: '', o: top})
 							});
 					} else {
 						var element = maybeElement.a;
-						var newQuery = (element.O > 0) ? ($elm$core$String$fromInt(element.O) + (' ' + element.Y)) : '';
+						var newQuery = (element.Q > 0) ? ($elm$core$String$fromInt(element.Q) + (' ' + element._)) : '';
 						return _Utils_update(
 							model,
 							{
@@ -7255,7 +7267,7 @@ var $author$project$Main$update = F2(
 									$elm$core$Basics$neq(element),
 									model.a),
 								f: $elm$core$Maybe$Just(
-									{P: false, l: left, y: newQuery, o: top})
+									{R: false, l: left, y: newQuery, o: top})
 							});
 					}
 				}();
@@ -7269,8 +7281,9 @@ var $author$project$Main$update = F2(
 						$elm$browser$Browser$Dom$focus('activeInput')));
 			case 1:
 				var element = msg.a;
-				var left = msg.b;
-				var top = msg.c;
+				var leftBeforeScroll = msg.b;
+				var topBeforeScroll = msg.c;
+				var top = topBeforeScroll + model.I;
 				var lostElementList = function () {
 					var _v7 = model.u;
 					if (_v7.$ === 1) {
@@ -7282,6 +7295,7 @@ var $author$project$Main$update = F2(
 							[lostElement]);
 					}
 				}();
+				var left = leftBeforeScroll + model.G;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -7314,9 +7328,11 @@ var $author$project$Main$update = F2(
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 			default:
 				var url = msg.a;
-				var left = msg.b;
-				var top = msg.c;
+				var leftBeforeScroll = msg.b;
+				var topBeforeScroll = msg.c;
 				var zIndex = $author$project$Main$nextZIndex(model.a);
+				var top = topBeforeScroll + model.I;
+				var left = leftBeforeScroll + model.G;
 				var _v11 = model.u;
 				if (_v11.$ === 1) {
 					var newUrl = function () {
@@ -7357,7 +7373,7 @@ var $author$project$Main$update = F2(
 								$elm$core$List$cons,
 								_Utils_update(
 									element,
-									{l: newLeft, o: newTop, X: zIndex}),
+									{l: newLeft, o: newTop, Z: zIndex}),
 								model.a)
 						});
 					return _Utils_Tuple2(newModel, $elm$core$Platform$Cmd$none);
@@ -7379,6 +7395,10 @@ var $author$project$Main$Input = function (a) {
 	return {$: 5, a: a};
 };
 var $author$project$Main$InputLostFocus = {$: 6};
+var $author$project$Main$Scroll = F2(
+	function (a, b) {
+		return {$: 15, a: a, b: b};
+	});
 var $author$project$Main$Submit = {$: 7};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$json$Json$Encode$bool = _Json_wrap;
@@ -7506,6 +7526,24 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$json$Json$Decode$map,
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $author$project$Main$onScroll = function (message) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'scroll',
+		A3(
+			$elm$json$Json$Decode$map2,
+			message,
+			A2(
+				$elm$json$Json$Decode$at,
+				_List_fromArray(
+					['detail', 'leftScroll']),
+				$elm$json$Json$Decode$int),
+			A2(
+				$elm$json$Json$Decode$at,
+				_List_fromArray(
+					['detail', 'topScroll']),
+				$elm$json$Json$Decode$int)));
 };
 var $elm$html$Html$Events$alwaysPreventDefault = function (msg) {
 	return _Utils_Tuple2(msg, true);
@@ -7846,14 +7884,14 @@ var $mercurymedia$elm_message_toast$MessageToast$viewToast = F3(
 				A2($elm$html$Html$Attributes$style, 'margin', '0.125rem 0'),
 				A2($elm$html$Html$Attributes$style, 'box-shadow', '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)')
 			]);
-		var updatedToastAttributes = A2($elm$core$List$append, defaultToastAttributes, config.M);
+		var updatedToastAttributes = A2($elm$core$List$append, defaultToastAttributes, config.O);
 		return A2(
 			$elm$html$Html$div,
 			updatedToastAttributes,
 			_List_fromArray(
 				[
-					A2($mercurymedia$elm_message_toast$MessageToast$viewToastIcon, config.K, toast),
-					A2($mercurymedia$elm_message_toast$MessageToast$viewToastMessage, config.L, toast),
+					A2($mercurymedia$elm_message_toast$MessageToast$viewToastIcon, config.M, toast),
+					A2($mercurymedia$elm_message_toast$MessageToast$viewToastMessage, config.N, toast),
 					$mercurymedia$elm_message_toast$MessageToast$viewCloseIcon(
 					dismissEvent(toast))
 				]));
@@ -7881,7 +7919,7 @@ var $mercurymedia$elm_message_toast$MessageToast$view = function (_v0) {
 	var config = _v0.a;
 	var toasts = _v0.b;
 	var dismissEvent = function (toastMessage) {
-		return config.W(
+		return config.Y(
 			A2(
 				$mercurymedia$elm_message_toast$MessageToast$MessageToast,
 				config,
@@ -7912,7 +7950,7 @@ var $mercurymedia$elm_message_toast$MessageToast$view = function (_v0) {
 				A2($elm$html$Html$Attributes$style, 'flex-direction', 'flex-col'),
 				A2($elm$html$Html$Attributes$style, 'flex-flow', 'wrap')
 			]);
-		var updatedContainerAttributes = A2($elm$core$List$append, defaultContainerAttributes, config.J);
+		var updatedContainerAttributes = A2($elm$core$List$append, defaultContainerAttributes, config.L);
 		return A2(
 			$elm$html$Html$div,
 			updatedContainerAttributes,
@@ -7958,9 +7996,9 @@ var $author$project$Main$viewElement = function (element) {
 	var _v0 = element;
 	var left = _v0.l;
 	var top = _v0.o;
-	var imageSource = _v0.Y;
-	var zIndex = _v0.X;
-	var fontSize = _v0.O;
+	var imageSource = _v0._;
+	var zIndex = _v0.Z;
+	var fontSize = _v0.Q;
 	var commonAttributes = _List_fromArray(
 		[
 			A2($elm$html$Html$Attributes$style, 'position', 'absolute'),
@@ -8031,7 +8069,7 @@ var $author$project$Main$view = function (model) {
 			var left = _v0.a.l;
 			var top = _v0.a.o;
 			var query = _v0.a.y;
-			var isLoading = _v0.a.P;
+			var isLoading = _v0.a.R;
 			return _List_fromArray(
 				[
 					A2(
@@ -8110,6 +8148,7 @@ var $author$project$Main$view = function (model) {
 				$author$project$Main$DoubleClick($elm$core$Maybe$Nothing)),
 				$author$project$Main$onDragOver($author$project$Main$DragOver),
 				$author$project$Main$onDropData($author$project$Main$Drop),
+				$author$project$Main$onScroll($author$project$Main$Scroll),
 				$elm$html$Html$Attributes$id('elmroot')
 			]),
 		_Utils_ap(
@@ -8121,6 +8160,6 @@ var $author$project$Main$view = function (model) {
 					A2($elm$core$List$map, $author$project$Main$viewElement, model.a)))));
 };
 var $author$project$Main$main = $elm$browser$Browser$element(
-	{aU: $author$project$Main$init, a3: $author$project$Main$subscriptions, a6: $author$project$Main$update, a8: $author$project$Main$view});
+	{aW: $author$project$Main$init, a5: $author$project$Main$subscriptions, a8: $author$project$Main$update, ba: $author$project$Main$view});
 _Platform_export({'Main':{'init':$author$project$Main$main(
 	$elm$json$Json$Decode$succeed(0))(0)}});}(this));

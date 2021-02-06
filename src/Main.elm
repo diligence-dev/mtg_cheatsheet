@@ -16,8 +16,9 @@ import MessageToast exposing (MessageToast)
 import Task
 
 
+
 --log =
-    --Debug.log "stuff"
+--Debug.log "stuff"
 
 
 main =
@@ -60,6 +61,8 @@ type alias Model =
     , beingDragged : Maybe ( Element, Int, Int )
     , input : Maybe { left : Int, top : Int, query : String, isLoading : Bool }
     , messageToast : MessageToast Msg
+    , leftScroll : Int
+    , topScroll : Int
     }
 
 
@@ -86,6 +89,8 @@ init _ =
             , beingDragged = Nothing
             , input = Nothing
             , messageToast = MessageToast.init UpdatedSimpleMessageToast
+            , leftScroll = 0
+            , topScroll = 0
             }
     in
     ( model, Cmd.none )
@@ -107,11 +112,15 @@ type Msg
     | FileContentLoaded String
     | NoOp
     | UpdatedSimpleMessageToast (MessageToast Msg)
+    | Scroll Int Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        Scroll leftScroll topScroll ->
+            ( { model | leftScroll = leftScroll, topScroll = topScroll }, Cmd.none )
+
         UpdatedSimpleMessageToast updatedMessageToast ->
             ( { model | messageToast = updatedMessageToast }, Cmd.none )
 
@@ -220,8 +229,14 @@ update msg model =
         Input query ->
             ( { model | input = model.input |> Maybe.map (\input -> { input | query = query }) }, Cmd.none )
 
-        DoubleClick maybeElement left top ->
+        DoubleClick maybeElement leftBeforeScroll topBeforeScroll ->
             let
+                left =
+                    leftBeforeScroll + model.leftScroll
+
+                top =
+                    topBeforeScroll + model.topScroll
+
                 newModel =
                     case maybeElement of
                         Nothing ->
@@ -243,8 +258,14 @@ update msg model =
             in
             ( newModel, Task.attempt (\_ -> NoOp) (Dom.focus "activeInput") )
 
-        Drag element left top ->
+        Drag element leftBeforeScroll topBeforeScroll ->
             let
+                left =
+                    leftBeforeScroll + model.leftScroll
+
+                top =
+                    topBeforeScroll + model.topScroll
+
                 lostElementList =
                     case model.beingDragged of
                         Nothing ->
@@ -271,10 +292,16 @@ update msg model =
         DragOver ->
             ( model, Cmd.none )
 
-
-        Drop url left top ->
+        Drop url leftBeforeScroll topBeforeScroll ->
             let
-                zIndex = nextZIndex model.elements
+                zIndex =
+                    nextZIndex model.elements
+
+                left =
+                    leftBeforeScroll + model.leftScroll
+
+                top =
+                    topBeforeScroll + model.topScroll
             in
             case model.beingDragged of
                 Nothing ->
@@ -282,26 +309,34 @@ update msg model =
                         newUrl =
                             if url |> String.startsWith "https://scryfall.com/card/" then
                                 let
-                                    editionAndId = url |> String.split "/" |> List.drop 4 |> List.take 2
+                                    editionAndId =
+                                        url |> String.split "/" |> List.drop 4 |> List.take 2
                                 in
-                                "https://api.scryfall.com/cards/" ++ (String.join "/" editionAndId) ++ "?format=image&version=normal"
+                                "https://api.scryfall.com/cards/" ++ String.join "/" editionAndId ++ "?format=image&version=normal"
+
                             else
                                 url
 
-                        newModel = { model | elements = Element left top newUrl zIndex -1 :: model.elements }
+                        newModel =
+                            { model | elements = Element left top newUrl zIndex -1 :: model.elements }
                     in
                     ( newModel, Cmd.none )
-                Just (element, leftStart, topStart) ->
+
+                Just ( element, leftStart, topStart ) ->
                     let
-                        newLeft = element.left + (left - leftStart)
-                        newTop = element.top + (top - topStart)
+                        newLeft =
+                            element.left + (left - leftStart)
+
+                        newTop =
+                            element.top + (top - topStart)
+
                         newModel =
                             { model
                                 | elements = { element | left = newLeft, top = newTop, zIndex = zIndex } :: model.elements
                                 , beingDragged = Nothing
                             }
                     in
-                    (newModel, Cmd.none)
+                    ( newModel, Cmd.none )
 
 
 viewElement : Element -> Html Msg
@@ -380,6 +415,7 @@ view model =
         , onDoubleClick <| DoubleClick Nothing
         , onDragOver DragOver
         , onDropData Drop
+        , onScroll Scroll
         , id "elmroot"
         ]
         (messageToast ++ importExportButtons ++ maybeInput ++ List.map viewElement model.elements)
@@ -410,6 +446,14 @@ onDropData message =
     Events.on "dropdata" <|
         Decode.map3
             message
-                (Decode.at [ "detail", "data" ] Decode.string)
-                (Decode.at [ "detail", "left" ] Decode.int)
-                (Decode.at [ "detail", "top" ] Decode.int)
+            (Decode.at [ "detail", "data" ] Decode.string)
+            (Decode.at [ "detail", "left" ] Decode.int)
+            (Decode.at [ "detail", "top" ] Decode.int)
+
+
+onScroll message =
+    Events.on "scroll" <|
+        Decode.map2
+            message
+            (Decode.at [ "detail", "leftScroll" ] Decode.int)
+            (Decode.at [ "detail", "topScroll" ] Decode.int)
