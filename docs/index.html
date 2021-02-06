@@ -5,17 +5,18 @@
   <script src="main.js"></script>
 </head>
 
-<body>
+<body style="margin:0;padding:0">
   <div id="myapp"></div>
 </body>
 <script>
     var app = Elm.Main.init({ node: document.getElementById("myapp") })
+
     var elmroot = document.getElementById("elmroot")
     elmroot.addEventListener("drop", function(event) {
         elmroot.dispatchEvent(new CustomEvent("dropdata", { detail: {
             data: event.dataTransfer.getData("text/plain"),
-            left: event.clientX,
-            top: event.clientY,
+            left: event.clientX + document.documentElement.scrollLeft,
+            top: event.clientY + document.documentElement.scrollTop,
         }}))
         event.preventDefault()
         event.stopPropagation()
