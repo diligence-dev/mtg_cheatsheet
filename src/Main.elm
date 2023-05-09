@@ -202,7 +202,10 @@ update msg model =
                                             , expect =
                                                 Http.expectJson
                                                     (Response input.left input.top)
-                                                    (Decode.at [ "data", "0", "image_uris", "normal" ] Decode.string)
+                                                    (Decode.oneOf [ Decode.at [ "data", "0", "image_uris", "normal" ] Decode.string
+                                                                  , Decode.at [ "data", "0", "card_faces", "0", "image_uris", "normal" ] Decode.string
+                                                                  ]
+                                                    )
                                             }
                                 in
                                 ( newModel, command )
